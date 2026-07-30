@@ -1,22 +1,37 @@
-#TODO: Create a letter using starting_letter.txt 
-#for each name in invited_names.txt
-#Replace the [name] placeholder with the actual name.
-#Save the letters in the folder "ReadyToSend".
-    
-#Hint1: This method will help you: https://www.w3schools.com/python/ref_file_readlines.asp
-    #Hint2: This method will also help you: https://www.w3schools.com/python/ref_string_replace.asp
-        #Hint3: THis method will help you: https://www.w3schools.com/python/ref_string_strip.asp
+import turtle
+import pandas as pd
+from state_label import StateLabel
 
-with open("Input/Letters/starting_letter.txt", "r") as letter_file:
-    template = letter_file.read()
+# def get_mouse_click_coor(x, y):
+#     print(x,y)
+df = pd.read_csv("50_states.csv")
+# print(df.columns)
+# print(df.head())
 
-with open("Input/Names/invited_names.txt", "r") as name_file:
-    names = name_file.readlines()
 
-for name in names:
-    clean_name = name.strip()
-    personalized_letter = template.replace("[name]", clean_name)
+screen = turtle.Screen()
+screen.title("U.S. States Game")
+image = "blank_states_img.gif"
+screen.addshape(image)
+turtle.shape(image)
 
-    output_path = f"Output/ReadyToSend/{personalized_letter}.txt"
-    with open(output_path, "w") as output_file:
-        output_file.write(personalized_letter)
+guessed_states = []
+
+while len(guessed_states) < 50:
+    answer_state = screen.textinput(title=f"{str(len(guessed_states))}/50 Guess the state", prompt="Name a state....")
+    title_case = answer_state.title()
+    print(f"User answered {title_case}")
+    if title_case not in guessed_states and title_case in df.state.values:
+        guessed_states.append(title_case)
+        state_row_x = df[df["state"] == title_case].values[0][1]
+        state_row_y = df[df["state"] == title_case].values[0][2]
+        state_label = StateLabel()
+        state_label.goto(state_row_x, state_row_y)
+        state_label.write(title_case)
+
+    else:
+        pass
+
+turtle.mainloop()
+
+# screen.exitonclick()
